@@ -1,0 +1,53 @@
+plugins {
+	id 'java'
+	id 'org.springframework.boot' version '3.2.1'
+	id 'io.spring.dependency-management' version '1.1.4'
+}
+
+group = 'com.oscarhanke'
+version = '0.0.1-SNAPSHOT'
+
+java {
+	sourceCompatibility = '17'
+}
+
+configurations {
+	compileOnly {
+		extendsFrom annotationProcessor
+	}
+
+	integrationtestsImplementation.extendsFrom(testImplementation)
+	integrationtestsCompileOnly.extendsFrom(testCompileOnly)
+	integrationtestsAnnotationProcessors.extendsFrom(testAnnotationProcessor)
+}
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+
+	// Spring
+	implementation "org.springframework.boot:spring-boot-starter-web"
+	implementation "org.springframework.boot:spring-boot-starter-actuator:${actuatorVersion}"
+	testImplementation "org.springframework.boot:spring-boot-starter-test"
+
+	// Other
+	compileOnly "org.projectlombok:lombok"
+	annotationProcessor "org.projectlombok:lombok"
+}
+
+sourceSets {
+	integrationtests {
+		java {
+			srcDir 'src/integrationTests/java'
+		}
+		compileClasspath += sourceSets.main.output
+		runtimeClasspath += sourceSets.main.output
+	}
+}
+
+tasks.named('test') {
+	description = 'Run unit-tests'
+	useJUnitPlatform()
+}
